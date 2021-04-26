@@ -351,3 +351,5 @@ MigrationBackup/
 infrastructure/.terraform
 src/Sample.AzureSearchLoadTests/result.csv
 src/Sample.AzureSearchLoadTests/Properties/launchSettings.json
+*.tfstate
+*.backup

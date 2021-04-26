@@ -28,11 +28,8 @@ namespace Sample.AzureSearchLoadTests
 
                 Thread.Sleep(TimeSpan.FromSeconds(1));
 
-                if (i % 2 == 0)
-                {
-                    var batch = statistics.AddIndexedCount(await azureSearch.GetDocumentsCountAsync());
-                    pbar.WriteLine(batch.Dump());
-                }
+                var batch = statistics.AddIndexedCount(await azureSearch.GetDocumentsCountAsync());
+                pbar.WriteLine(batch.Dump());
             }
 
             statistics.Dump();

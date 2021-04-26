@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Sample.AzureSearchLoadTests
 {
@@ -11,7 +12,9 @@ namespace Sample.AzureSearchLoadTests
     {
         private int _actualBatch = 0;
         private int _totalCount = 0;
-        private List<Batch> _batches = new List<Batch>();
+        private readonly List<Batch> _batches = new();
+        private int _errorSequence = 0;
+        private Dictionary<int, int> _errorGroups = new();
 
         public Statistics(int initTotalCount)
         {
@@ -31,7 +34,23 @@ namespace Sample.AzureSearchLoadTests
             _batches.Add(batch);
             _actualBatch = 0;
 
+            ErrorSequence(batch);
+
             return batch;
+        }
+
+        private void ErrorSequence(Batch batch)
+        {
+            if (batch.MissingDataCount > 0)
+            {
+                _errorSequence++;
+            }
+            else
+            {
+                int count = _errorGroups.ContainsKey(_errorSequence) ? _errorGroups[_errorSequence] : 0;
+                _errorGroups[_errorSequence] = ++count;
+                _errorSequence = 0;
+            }
         }
 
         public void Dump()
@@ -40,6 +59,13 @@ namespace Sample.AzureSearchLoadTests
             using var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" });
 
             csv.WriteRecords(_batches);
+
+            Console.WriteLine();
+            Console.WriteLine("Error groups:");
+            foreach (var item in _errorGroups.OrderBy(p => p.Key))
+            {
+                Console.WriteLine($"Sequence: '{item.Key}' - {item.Value}");
+            }
         }
 
         public record Batch(DateTime Time, int TotalUploadedCount, int ActualUploadedCount, int TotalIndexedCount)
