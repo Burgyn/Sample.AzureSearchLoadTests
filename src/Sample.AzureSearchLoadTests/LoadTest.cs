@@ -26,10 +26,10 @@ namespace Sample.AzureSearchLoadTests
                 statistics.Add(count);
                 await azureSearch.UploadDocumentsAsync(documents);
 
-                Thread.Sleep(TimeSpan.FromSeconds(1));
+                /*Thread.Sleep(TimeSpan.FromSeconds(1));
 
                 var batch = statistics.AddIndexedCount(await azureSearch.GetDocumentsCountAsync());
-                pbar.WriteLine(batch.Dump());
+                pbar.WriteLine(batch.Dump());*/
             }
 
             statistics.Dump();

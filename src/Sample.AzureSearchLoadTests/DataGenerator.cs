@@ -78,7 +78,7 @@ namespace Sample.AzureSearchLoadTests
         }
 
         public static int RandomCount()
-            => _rnd.Next(20, 300);
+            => _rnd.Next(100, 200);
 
         public static IEnumerable<Order> GenerateDocuments(int count)
         {
